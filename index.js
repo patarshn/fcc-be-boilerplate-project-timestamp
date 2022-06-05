@@ -20,17 +20,29 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/:date", function (req, res) {
+app.get("/api/:date?", function (req, res) {  
   let date = req.params.date;
-  let utc = new Date(date);
+  let utc;
   let unix;
+  let callback;
+  if(!date){
+    date = Date.now();
+  }
+
+  
+  utc = new Date(date);
   
   if(!(utc > 0)){
     utc = new Date(parseInt(date));
   }
   unix = Math.floor(utc.getTime())
 
-  let callback = {
+  if(!(utc > 0)){
+    res.json({ error : "Invalid Date" });
+    return
+  }
+  
+  callback = {
     unix: unix,
     utc: utc.toGMTString()    
   }
